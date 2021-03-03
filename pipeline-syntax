@@ -1,0 +1,21 @@
+node{
+    stage('pulling code from github to test server'){
+    git credentialsId: 'ea896b10-7294-47fa-b897-03764dc41429', url: 'https://github.com/sunilkumar047/devops-test.git'
+    }
+
+    stage('building code using maven'){
+     sh 'mvn clean install'
+     }
+
+    stage('creating image from output'){
+     sh 'docker build -t sunilkumar0/devops:1 .'
+     }
+
+    stage('pushing docker image to dockerhub'){
+    withCredentials([string(credentialsId: '5203da37-a614-4bf6-b37c-afea59d612a7', variable: 'docker123')]) {
+    sh "docker login -u sunilkumar0 -p ${docker123}"
+}
+    }
+    sh 'docker push sunilkumar0/devops:1'
+
+}
